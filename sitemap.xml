@@ -4,7 +4,79 @@
   <url>
     <loc>https://mrqytalk.github.io/2022/04/15/JavaWeb%E7%AC%94%E8%AE%B0/</loc>
     
-    <lastmod>2022-04-15</lastmod>
+    <lastmod>2022-04-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://mrqytalk.github.io/tags/index.html</loc>
+    
+    <lastmod>2022-04-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://mrqytalk.github.io/categories/index.html</loc>
+    
+    <lastmod>2022-04-16</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://mrqytalk.github.io/repository/index.html</loc>
+    
+    <lastmod>2022-04-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://mrqytalk.github.io/links/index.html</loc>
+    
+    <lastmod>2022-04-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://mrqytalk.github.io/books/index.html</loc>
+    
+    <lastmod>2022-04-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://mrqytalk.github.io/about/index.html</loc>
+    
+    <lastmod>2022-04-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://mrqytalk.github.io/404.html</loc>
+    
+    <lastmod>2022-04-14</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://mrqytalk.github.io/2022/04/14/hello-world/</loc>
+    
+    <lastmod>2022-04-14</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -13,7 +85,7 @@
 
   <url>
     <loc>https://mrqytalk.github.io/</loc>
-    <lastmod>2022-04-15</lastmod>
+    <lastmod>2022-04-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -21,14 +93,14 @@
   
   <url>
     <loc>https://mrqytalk.github.io/tags/%E7%AC%94%E8%AE%B0/</loc>
-    <lastmod>2022-04-15</lastmod>
+    <lastmod>2022-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://mrqytalk.github.io/tags/JavaWeb/</loc>
-    <lastmod>2022-04-15</lastmod>
+    <lastmod>2022-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -37,7 +109,7 @@
   
   <url>
     <loc>https://mrqytalk.github.io/categories/Java/</loc>
-    <lastmod>2022-04-15</lastmod>
+    <lastmod>2022-04-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
