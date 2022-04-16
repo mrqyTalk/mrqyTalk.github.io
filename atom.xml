@@ -6,7 +6,7 @@
   <link href="https://mrqytalk.github.io/atom.xml" rel="self"/>
   
   <link href="https://mrqytalk.github.io/"/>
-  <updated>2022-04-16T01:36:05.576Z</updated>
+  <updated>2022-04-16T12:37:05.268Z</updated>
   <id>https://mrqytalk.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>银行家算法</title>
+    <link href="https://mrqytalk.github.io/2022/04/16/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/"/>
+    <id>https://mrqytalk.github.io/2022/04/16/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/</id>
+    <published>2022-04-16T12:20:20.000Z</published>
+    <updated>2022-04-16T12:37:05.268Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="1-银行家算法概念"><a href="#1-银行家算法概念" class="headerlink" title="1.  银行家算法概念"></a>1.  银行家算法概念</h2><h3 id="1-1-介绍"><a href="#1-1-介绍" class="headerlink" title="1.1 介绍"></a>1.1 介绍</h3><p><strong>银行家算法</strong>（Banker’s Algorithm）是一个避免操作系统<a href="https://zh.wikipedia.org/wiki/%E6%AD%BB%E9%94%81">死锁</a>（Deadlock）的著名算法，属于事先预防策略。它以银行借贷系统的分配策略为基础，判断并保证系统的安全运行。</p><blockquote><p>死锁：当两个以上的运算单元，双方都在等待对方停止执行，以获取系统资源，但是没有一方提前退出时，就称为死锁。</p><p>产生死锁必须<strong>同时满足</strong>以下四个条件：</p><ul><li><p><strong>禁止抢占</strong>（no preemption）：系统资源不能被强制从一个进程中退出。</p></li><li><p><strong>持有和等待</strong>（hold and wait）：一个进程可以在等待时持有系统资源。</p></li><li><p><strong>互斥</strong>（mutual exclusion）：资源只能同时分配给一个行程，无法多个行程共享。</p></li><li><p><strong>循环等待</strong>（circular waiting）：一系列进程互相持有其他进程所需要的资源。</p></li></ul><p>因此，预防死锁需要打破其中一项。</p></blockquote><h3 id="1-2-概括"><a href="#1-2-概括" class="headerlink" title="1.2 概括"></a>1.2 概括</h3><p>当一个进程申请使用资源的时候，银行家算法通过先 <strong>试探</strong> 分配给该进程资源，然后通过安全性算法判断分配后的系统是否处于安全状态，若判断结果为安全，则给该进程分配资源，若不安全则试探分配作废，让该进程阻塞。</p><blockquote><p>安全系列不唯一，但只要存在一个就是安全策略，一定不会发生死锁</p></blockquote><h2 id="2-银行家算法具体实现"><a href="#2-银行家算法具体实现" class="headerlink" title="2. 银行家算法具体实现"></a>2. 银行家算法具体实现</h2><h3 id="2-1-术语概念"><a href="#2-1-术语概念" class="headerlink" title="2.1 术语概念"></a>2.1 术语概念</h3><p><code>available</code>:可用资源向量，记录系统中各类资源的当前可利用数目</p><p><code>allocation</code>:记录每个进程中对各类资源当前的占有量</p><p><code>max</code>:记录每个进程对各类资源的最大需求量</p><p><code>need</code>: 记录每个进程中对各类资源当前的需求量，等于max-allocation</p><p><code>request</code>: 请求向量，记录某个进程当前对各类资源的申请量，是银行家算法的入口参数。</p><h3 id="2-2-过程"><a href="#2-2-过程" class="headerlink" title="2.2 过程"></a>2.2 过程</h3><h4 id="2-2-1-先决条件过程"><a href="#2-2-1-先决条件过程" class="headerlink" title="2.2.1 先决条件过程"></a>2.2.1 先决条件过程</h4><ol><li><code>request[i,j]</code>&lt;<code>need[i,j]</code>，否则进程出错</li><li><code>request[i,j]</code>&lt;<code>available[i,j]</code>，否认进程阻塞</li></ol><h4 id="2-2-2-试探分配过程"><a href="#2-2-2-试探分配过程" class="headerlink" title="2.2.2 试探分配过程"></a>2.2.2 试探分配过程</h4><ol start="3"><li><p>系统试着把资源分配给进程P，并对相应数据结构作如下修改：</p><ul><li><p><code>available[i,j]  -request[i,j]</code></p></li><li><p><code>allocation[i,j]+request[i,j]</code></p></li><li><p><code>need[i,j]-request[i,j]</code></p></li></ul></li><li><p>系统执行安全性检测子算法，以判断试分配后系统状态是否安全；</p></li><li><p>若第4步返回逻辑真值，即“安全”，则完成本次分配，返回；</p></li><li><p>否则，撤销此次（即第3步中的）试分配，进程P阻塞。</p></li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;1-银行家算法概念&quot;&gt;&lt;a href=&quot;#1-银行家算法概念&quot; class=&quot;headerlink&quot; title=&quot;1.  银行家算法概念&quot;&gt;&lt;/a&gt;1.  银行家算法概念&lt;/h2&gt;&lt;h3 id=&quot;1-1-介绍&quot;&gt;&lt;a href=&quot;#1-1-介绍&quot; class=&quot;</summary>
+      
+    
+    
+    
+    <category term="操作系统" scheme="https://mrqytalk.github.io/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
+    
+    
+    <category term="算法" scheme="https://mrqytalk.github.io/tags/%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="操作系统" scheme="https://mrqytalk.github.io/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
+    
+  </entry>
   
   <entry>
     <title>JavaWeb笔记</title>
