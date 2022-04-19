@@ -19,24 +19,21 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>MySql逻辑架构 | mrqyTalk</title>
-  <meta name="description" content="1. Mysql逻辑架构剖析1.1 服务器处理客户端请求 以查询请求为案例，服务端对客户端的请求处理如下：   1.2 第一层：连接层系统（客户端）访问 MySQL 服务器前，做的第一件事就是建立 TCP 连接。 经过三次握手建立连接成功后， MySQL 服务器对  TCP 传输过来的账号密码做身份认证、权限获取。  用户名或密码不对，会收到一个Access denied for user错误，客">
+  <title>MySql存储引擎 | mrqyTalk</title>
+  <meta name="description" content="1. 存储引擎的相关命令 查看mysql提供什么存储引擎并格式化输出：show engines \G;   查看默认的存储引擎：show variables like &#39;%storage_engine%&#39;;  修改默认的存储引擎 如果在创建表的语句中没有显式指定表的存储引擎的话，那就会默认使用 InnoDB 作为表的存储引擎。如果我们想改变表的默认存储引擎的话，可以这样写启动服务器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySql逻辑架构">
-<meta property="og:url" content="https://mrqytalk.github.io/2022/04/18/MySql%E9%80%BB%E8%BE%91%E6%9E%B6%E6%9E%84/index.html">
+<meta property="og:title" content="MySql存储引擎">
+<meta property="og:url" content="https://mrqytalk.github.io/2022/04/19/MySql%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/index.html">
 <meta property="og:site_name" content="mrqyTalk">
-<meta property="og:description" content="1. Mysql逻辑架构剖析1.1 服务器处理客户端请求 以查询请求为案例，服务端对客户端的请求处理如下：   1.2 第一层：连接层系统（客户端）访问 MySQL 服务器前，做的第一件事就是建立 TCP 连接。 经过三次握手建立连接成功后， MySQL 服务器对  TCP 传输过来的账号密码做身份认证、权限获取。  用户名或密码不对，会收到一个Access denied for user错误，客">
+<meta property="og:description" content="1. 存储引擎的相关命令 查看mysql提供什么存储引擎并格式化输出：show engines \G;   查看默认的存储引擎：show variables like &#39;%storage_engine%&#39;;  修改默认的存储引擎 如果在创建表的语句中没有显式指定表的存储引擎的话，那就会默认使用 InnoDB 作为表的存储引擎。如果我们想改变表的默认存储引擎的话，可以这样写启动服务器">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/mrqyTalk/mrqyTalk.github.io@master/image/image-20220418085533068.png">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/mrqyTalk/mrqyTalk.github.io@master/image/image-20220418104305891.png">
-<meta property="article:published_time" content="2022-04-18T08:01:36.000Z">
-<meta property="article:modified_time" content="2022-04-18T14:53:25.208Z">
+<meta property="article:published_time" content="2022-04-19T07:03:42.000Z">
+<meta property="article:modified_time" content="2022-04-19T07:04:41.025Z">
 <meta property="article:author" content="喝水艺术家">
 <meta property="article:tag" content="MySql">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/mrqyTalk/mrqyTalk.github.io@master/image/image-20220418085533068.png">
   <!-- Canonical links -->
-  <link rel="canonical" href="https://mrqytalk.github.io/2022/04/18/MySql%E9%80%BB%E8%BE%91%E6%9E%B6%E6%9E%84/index.html">
+  <link rel="canonical" href="https://mrqytalk.github.io/2022/04/19/MySql%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/index.html">
   
   
     <link rel="icon" href="/favicon.jpg" type="image/x-icon">
@@ -232,21 +229,21 @@
   <div class="slimContent">
     <nav id="toc" class="article-toc">
       <h3 class="toc-title">文章目录</h3>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Mysql%E9%80%BB%E8%BE%91%E6%9E%B6%E6%9E%84%E5%89%96%E6%9E%90"><span class="toc-text">1. Mysql逻辑架构剖析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E7%AC%AC%E4%B8%80%E5%B1%82%EF%BC%9A%E8%BF%9E%E6%8E%A5%E5%B1%82"><span class="toc-text">1.2 第一层：连接层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E7%AC%AC%E4%BA%8C%E5%B1%82%EF%BC%9A%E6%9C%8D%E5%8A%A1%E5%B1%82"><span class="toc-text">1.3 第二层：服务层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E7%AC%AC%E4%B8%89%E5%B1%82%EF%BC%9A%E5%BC%95%E6%93%8E%E5%B1%82"><span class="toc-text">1.4 第三层：引擎层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-%E7%AC%AC%E5%9B%9B%E5%B1%82%EF%BC%9A%E5%AD%98%E5%82%A8%E5%B1%82"><span class="toc-text">1.5 第四层：存储层</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BC%93%E5%86%B2%E6%B1%A0%EF%BC%88buffer-pool%EF%BC%89"><span class="toc-text">2. 数据库缓冲池（buffer pool）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E7%BC%93%E5%86%B2%E6%B1%A0VS%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98"><span class="toc-text">2.1 缓冲池VS查询缓存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E7%BC%93%E5%86%B2%E6%B1%A0%E5%A6%82%E4%BD%95%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="toc-text">2.2 缓冲池如何读取数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E6%9F%A5%E7%9C%8B-x2F-%E8%AE%BE%E7%BD%AE%E7%BC%93%E5%86%B2%E6%B1%A0%E7%9A%84%E5%A4%A7%E5%B0%8F"><span class="toc-text">2.3 查看&#x2F;设置缓冲池的大小</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E7%9A%84%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4"><span class="toc-text">1. 存储引擎的相关命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%BB%8B%E7%BB%8D"><span class="toc-text">2. 存储引擎介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-InnoDB%E5%BC%95%E6%93%8E%EF%BC%9A%E5%85%B7%E5%A4%87%E5%A4%96%E9%94%AE%E6%94%AF%E6%8C%81%E5%8A%9F%E8%83%BD%E7%9A%84%E4%BA%8B%E5%8A%A1%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-text">2.1  InnoDB引擎：具备外键支持功能的事务存储引擎</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-MyISAM%E5%92%8CInnoDB%E7%9A%84%E6%AF%94%E8%BE%83"><span class="toc-text">2.2 MyISAM和InnoDB的比较</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-InnoDB%E8%A1%A8%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-text">2.3 InnoDB表的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-InnoDB%E6%9E%B6%E6%9E%84"><span class="toc-text">2.4 InnoDB架构</span></a></li></ol></li></ol>
     </nav>
   </div>
 </aside>
 
 <main class="main" role="main">
   <div class="content">
-  <article id="post-MySql逻辑架构" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-MySql存储引擎" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      MySql逻辑架构
+      MySql存储引擎
     </h1>
   
 
@@ -254,8 +251,8 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2022/04/18/MySql%E9%80%BB%E8%BE%91%E6%9E%B6%E6%9E%84/" class="article-date">
-	  <time datetime="2022-04-18T08:01:36.000Z" itemprop="datePublished">2022-04-18</time>
+	<a href="/2022/04/19/MySql%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/" class="article-date">
+	  <time datetime="2022-04-19T07:03:42.000Z" itemprop="datePublished">2022-04-19</time>
 	</a>
 </span>
         
@@ -280,98 +277,115 @@
 	</span>
 
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/04/18/MySql%E9%80%BB%E8%BE%91%E6%9E%B6%E6%9E%84/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/04/19/MySql%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/#comments" class="article-comment-link">评论</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.9k(字)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 2.2k(字)</span>
 	
 	
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 6(分)</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 7(分)</span>
 	
 
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <h2 id="1-Mysql逻辑架构剖析"><a href="#1-Mysql逻辑架构剖析" class="headerlink" title="1. Mysql逻辑架构剖析"></a>1. Mysql逻辑架构剖析</h2><p><strong>1.1</strong> <strong>服务器处理客户端请求</strong></p>
-<p>以查询请求为案例，服务端对客户端的请求处理如下：</p>
-<img src="https://cdn.jsdelivr.net/gh/mrqyTalk/mrqyTalk.github.io@master/image/image-20220418085533068.png" alt="image-20220418085533068" style="zoom: 80%;" />
-
-<h3 id="1-2-第一层：连接层"><a href="#1-2-第一层：连接层" class="headerlink" title="1.2 第一层：连接层"></a>1.2 第一层：连接层</h3><p>系统（客户端）访问 <code>MySQL </code>服务器前，做的第一件事就是建立<code> TCP</code> 连接。</p>
-<p>经过三次握手建立连接成功后， <code>MySQL </code>服务器对 <code> TCP</code> 传输过来的账号密码做身份认证、权限获取。</p>
-<ul>
-<li><p><strong>用户名或密码不对，会收到一个<code>Access denied for user</code>错误，客户端程序结束执行</strong></p>
+        <h2 id="1-存储引擎的相关命令"><a href="#1-存储引擎的相关命令" class="headerlink" title="1. 存储引擎的相关命令"></a>1. 存储引擎的相关命令</h2><ul>
+<li><p>查看mysql提供什么存储引擎并格式化输出：<code>show engines \G; </code></p>
 </li>
-<li><p><strong>用户名密码认证通过，会从权限表查出账号拥有的权限与连接关联，之后的权限判断逻辑，都将依赖于此时读到的权限</strong></p>
+<li><p>查看默认的存储引擎：<code>show variables like &#39;%storage_engine%&#39;;</code></p>
+</li>
+<li><p>修改默认的存储引擎</p>
+<p>如果在创建表的语句中没有显式指定表的存储引擎的话，那就会默认使用 InnoDB 作为表的存储引擎。如果我们想改变表的默认存储引擎的话，可以这样写启动服务器的命令行：<code>SET DEFAULT_STORAGE_ENGINE=MyISAM; </code>或者修改 my.cnf 文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">default-storage-engine=MyISAM </span><br><span class="line"># 重启服务</span><br><span class="line">systemctl restart mysqld.service</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建表时指定存储引擎：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE 表名(建表语句;) ENGINE = 存储引擎名称;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改表的存储引擎：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE 表名 ENGINE = 存储引擎名称;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="2-存储引擎介绍"><a href="#2-存储引擎介绍" class="headerlink" title="2. 存储引擎介绍"></a>2. 存储引擎介绍</h2><h3 id="2-1-InnoDB引擎：具备外键支持功能的事务存储引擎"><a href="#2-1-InnoDB引擎：具备外键支持功能的事务存储引擎" class="headerlink" title="2.1  InnoDB引擎：具备外键支持功能的事务存储引擎"></a>2.1  InnoDB引擎：具备外键支持功能的事务存储引擎</h3><ul>
+<li><p>MySQL大于等于5.5之后，默认采用InnoDB引擎 。 </p>
+</li>
+<li><p>InnoDB是MySQL的<code>默认事务型引擎</code> ，它被设计用来处理大量的短期(short-lived)事务。可以确保事务的完整提交(Commit)和回滚(Rollback)。</p>
+</li>
+<li><p>除了增加和查询外，还需要更新、删除操作，那么，应优先选择InnoDB存储引擎。</p>
+</li>
+<li><p><strong>除非有非常特别的原因需要使用其他的存储引擎，否则应该优先考虑InnoDB引擎。</strong></p>
+</li>
+<li><p>InnoDB是<strong>为处理巨大数据量的最大性能设计</strong> 。</p>
+</li>
+<li><p>对比MyISAM的存储引擎， <strong>InnoDB写的处理效率差一些</strong> ，并且会占用更多的磁盘空间以保存数据和索引。</p>
+</li>
+<li><p>MyISAM只缓存索引，不缓存真实数据；InnoDB不仅缓存索引还要缓存真实数据， <strong>对内存要求较高</strong> ，而且内存大小对性能有决定性的影响。</p>
 </li>
 </ul>
-<p>TCP 连接收到请求后，必须要分配给一个线程专门与这个客户端的交互。所以还会有个线程池，去走后面的流程。每一个连接从线程池中获取线程，省去了创建和销毁线程的开销。</p>
-<h3 id="1-3-第二层：服务层"><a href="#1-3-第二层：服务层" class="headerlink" title="1.3 第二层：服务层"></a><strong>1.3</strong> 第二层：服务层</h3><ul>
-<li><p><strong>SQL Interface: SQL接口</strong></p>
-<ul>
-<li><p>接收用户的SQL命令，并且返回用户需要查询的结果。比如SELECT … FROM就是调用SQL Interface </p>
-</li>
-<li><p>MySQL支持DML（数据操作语言）、DDL（数据定义语言）、存储过程、视图、触发器、自定义函数等多种SQL语言接口</p>
-</li>
-</ul>
-</li>
-<li><p><strong>Parser:</strong> <strong>解析器</strong></p>
-<ul>
-<li><p>在解析器中对 SQL 语句进行<strong>语法分析、语义分析</strong>。将SQL语句分解成数据结构，并将这个结构传递到后续步骤，以后SQL语句的传递和处理就是基于这个结构的。如果在分解构成中遇到错误，那么就说明这个SQL语句是不合理的。</p>
-<blockquote>
-<p>词法分析：你输入的是由多个字符串和空格组成的一条 SQL 语句，MySQL 需要识别出里面的字符串分别是什么，代表什么。 MySQL 从你输入的”select”这个关键字识别出来，这是一个查询语句。它也要把字符串“T”识别成“表名 T”，把字符串“ID”识别成“列 ID”。</p>
-<p>语法分析：语法分析器（比如：Bison）会根据语法规则，判断你输</p>
-<p>入的这个 SQL 语句是否 满足 MySQL 语法 。</p>
-</blockquote>
-</li>
-<li><p>在SQL命令传递到解析器的时候会被解析器验证和解析，并为其创建语法树 ，并根据数据字典丰富查询语法树，会<strong>验证该客户端是否具有执行该查询的权限</strong> 。创建好语法树后，MySQL还会对SQl查询进行语法上的优化，进行查询重写。</p>
-</li>
-</ul>
-</li>
-<li><p><strong>Optimizer:</strong> <strong>查询优化器</strong></p>
-<ul>
-<li><p>SQL语句在语法<strong>解析之后、查询之前</strong>会使用查询优化器确定 SQL 语句的执行路径，生成一个执行计划 。</p>
-</li>
-<li><p>这个执行计划表明应该<code>使用哪些索引</code>进行查询（全表检索还是使用索引检索），表之间的连接顺序如何，最后会按照执行计划中的步骤调用存储引擎提供的方法来真正的执行查询，并将查询结果返回给用户。</p>
-</li>
-<li><p>它使用<code>选取-投影-连接</code>策略进行查询。例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from student where gender =&#x27;女&#x27;</span><br></pre></td></tr></table></figure>
-
-<p>这个SELECT查询先根据WHERE语句进行<code>选取</code> ，而不是将表全部查询出来以后再进行gender过滤。 这个SELECT查询先根据id和name进行属性<code>投影</code> ，而不是将属性全部取出以后再进行过滤，将这两个查询条件 <code>连接</code>起来生成最终查询结果。</p>
-</li>
-</ul>
-</li>
-<li><p><strong>Caches &amp; Buffers： 查询缓存组件</strong></p>
-<ul>
-<li><p>MySQL内部维持着一些Cache和Buffer，比如Query Cache用来缓存一条SELECT语句的执行结果，如果能够在其中找到对应的查询结果，那么就不必再进行查询解析、优化和执行的整个过程了，直接将结果反馈给客户端。</p>
-</li>
-<li><p>这个缓存机制是由一系列小缓存组成的。比如表缓存，记录缓存，key缓存，权限缓存等 。</p>
-</li>
-<li><p>这个查询缓存可以在<code>不同客户端之间共享 </code>。 </p>
-</li>
-<li><p>从<code>MySQL 5.7.20</code>开始，不推荐使用查询缓存，并在 <code>MySQL 8.0</code>中删除 。</p>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="1-4-第三层：引擎层"><a href="#1-4-第三层：引擎层" class="headerlink" title="1.4 第三层：引擎层"></a>1.4 第三层：引擎层</h3><p>插件式存储引擎层（Storage Engines），<strong>真正的负责了MySQL中数据的存储和提取，对物理服务器级别维护的底层数据执行操作</strong>，服务器通过API与存储引擎进行通信。不同的存储引擎具有的功能不同，这样我们可以根据自己的实际需要进行选取。</p>
-<p>MySQL8默认支持以下的存储引擎如下：</p>
-<p><img src="https://cdn.jsdelivr.net/gh/mrqyTalk/mrqyTalk.github.io@master/image/image-20220418104305891.png" alt="image-20220418104305891"></p>
-<h3 id="1-5-第四层：存储层"><a href="#1-5-第四层：存储层" class="headerlink" title="1.5 第四层：存储层"></a>1.5 第四层：存储层</h3><p>所有的数据，数据库、表的定义，表的每一行的内容，索引，都是存在 文件系统 上，以 文件 的方式存在的，并完成与存储引擎的交互。当然有些存储引擎比如InnoDB，也支持不使用文件系统直接管理裸设备，但现代文件系统的实现使得这样做没有必要了。在文件系统之下，可以使用本地磁盘，可以使用DAS、NAS、SAN等各种存储系统。</p>
-<h2 id="2-数据库缓冲池（buffer-pool）"><a href="#2-数据库缓冲池（buffer-pool）" class="headerlink" title="2. 数据库缓冲池（buffer pool）"></a>2. 数据库缓冲池（buffer pool）</h2><p><code>InnoDB</code> 存储引擎是以页为单位来管理存储空间的，我们进行的增删改查操作其实本质上都是在访问页面（包括读页面、写页面、创建新页面等操作）。而磁盘 <code>I/O </code>需要消耗的时间很多，而在内存中进行操作，效率则会高很多，为了能让数据表或者索引中的数据随时被我们所用，DBMS 会申请<code>占用内存来作为数据缓冲池 </code>，在真正访问页面之前，需要把在磁盘上的页缓存到内存中的<code>Buffer Pool</code>之后才可以访问。</p>
-<p>这样做的好处是可以让磁盘活动最小化，从而<code>减少与磁盘直接进行 I/O 的时间 </code>。要知道，这种策略对提升 SQL 语句的查询性能来说至关重要。如果<strong>索引的数据在缓冲池里，那么访问的成本就会降低很多。</strong></p>
-<h3 id="2-1-缓冲池VS查询缓存"><a href="#2-1-缓冲池VS查询缓存" class="headerlink" title="2.1 缓冲池VS查询缓存"></a>2.1 缓冲池VS查询缓存</h3><p><strong>缓冲池：</strong>在 InnoDB 存储引擎中有一部分数据会放到内存中，缓冲池则占了这部分内存的大部分，它用来存储各种数据的缓存，包括：数据页、索引页、插入缓冲、锁信息、自适应 Hash 和数据字典信息等。</p>
-<p><strong>查询缓存</strong>：是提前把查询结果缓存 起来，这样下次不需要执行就可以直接拿到结果。需要说明的是，在MySQL 中的查询缓存，不是缓存查询计划，而是<strong>查询对应的结果。</strong>因为命中条件苛刻，而且只要数据表发生变化，查询缓存就会失效，因此命中率低。</p>
-<h3 id="2-2-缓冲池如何读取数据"><a href="#2-2-缓冲池如何读取数据" class="headerlink" title="2.2 缓冲池如何读取数据"></a>2.2 缓冲池如何读取数据</h3><p>缓冲池管理器会尽量将经常使用的数据保存起来，在数据库进行页面读操作的时候，首先会判断该页面是否在缓冲池中，如果存在就直接读取，如果不存在，就会通过内存或磁盘将页面存放到缓冲池中再进行读取。</p>
-<h3 id="2-3-查看-x2F-设置缓冲池的大小"><a href="#2-3-查看-x2F-设置缓冲池的大小" class="headerlink" title="2.3 查看&#x2F;设置缓冲池的大小"></a>2.3 查看&#x2F;设置缓冲池的大小</h3><p>查看：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show variables like &#x27;innodb_buffer_pool_size&#x27;;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>缓冲池的value值以bit为单位</p>
-</blockquote>
-<p>修改：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set global innodb_buffer_pool_size = 268435456;</span><br></pre></td></tr></table></figure>
-
+<h3 id="2-2-MyISAM和InnoDB的比较"><a href="#2-2-MyISAM和InnoDB的比较" class="headerlink" title="2.2 MyISAM和InnoDB的比较"></a>2.2 MyISAM和InnoDB的比较</h3><table>
+<thead>
+<tr>
+<th align="center">对比项</th>
+<th align="center">MyISAM</th>
+<th align="center">InnoDB</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">外键</td>
+<td align="center">不支持</td>
+<td align="center">支持</td>
+</tr>
+<tr>
+<td align="center">事务</td>
+<td align="center">不支持</td>
+<td align="center">支持</td>
+</tr>
+<tr>
+<td align="center">行表锁</td>
+<td align="center">表锁，即使操作一条记录也会锁住整个表，不适合高并发的操作</td>
+<td align="center">行锁，操作时只锁某一行，不对其它行有影响，适合高并发的操作</td>
+</tr>
+<tr>
+<td align="center">缓存</td>
+<td align="center">只缓存索引，不缓存真实数据</td>
+<td align="center">不仅缓存索引还要缓存真实数据，对内存要求较高，而且内存大小对性能有决定性的影响</td>
+</tr>
+<tr>
+<td align="center">自带系统表使用</td>
+<td align="center">Y</td>
+<td align="center">N</td>
+</tr>
+<tr>
+<td align="center">关注点</td>
+<td align="center">性能：节省资源、消耗少、简单业务</td>
+<td align="center">事务：并发写、事务、更大资源</td>
+</tr>
+<tr>
+<td align="center">默认安装</td>
+<td align="center">Y</td>
+<td align="center">N</td>
+</tr>
+<tr>
+<td align="center">默认使用</td>
+<td align="center">N</td>
+<td align="center">Y</td>
+</tr>
+</tbody></table>
+<h3 id="2-3-InnoDB表的优势"><a href="#2-3-InnoDB表的优势" class="headerlink" title="2.3 InnoDB表的优势"></a>2.3 InnoDB表的优势</h3><p>InnoDB存储引擎在实际应用中拥有诸多优势，比如操作便利、提高了数据库的性能、维护成本低等。如果由于硬件或软件的原因导致服务器崩溃，那么在重启服务器之后不需要进行额外的操作。InnoDB崩溃恢复功能自动将之前提交的内容定型，然后撤销没有提交的进程，重启之后继续从崩溃点开始执行。</p>
+<p>InnoDB存储引擎在主内存中维护缓冲池，高频率使用的数据将在内存中直接被处理。这种缓存方式应用于多种信息，加速了处理进程。</p>
+<p>在专用服务器上，物理内存中高达80%的部分被应用于缓冲池。如果需要将数据插入不同的表中，可以设置外键加强数据的完整性。更新或者删除数据，关联数据将会被自动更新或删除。如果试图将数据插入从表，但在主表中没有对应的数据，插入的数据将被自动移除。如果磁盘或内存中的数据出现崩溃，在使用脏数据之前，校验和机制会发出警告。当每个表的主键都设置合理时，与这些列有关的操作会被自动优化。插入、更新和删除操作通过做改变缓冲自动机制进行优化。 <strong>InnoDB不仅支持当前读写，也会缓冲改变的数据到数据流磁盘 。</strong></p>
+<p>InnoDB的性能优势不只存在于长时运行查询的大型表。在同一列多次被查询时，自适应哈希索引会提高查询的速度。使用InnoDB可以压缩表和相关的索引，可以 在<strong>不影响性能和可用性的情况下创建或删除索引</strong> 。对于大型文本和BLOB数据，使用动态行形式，这种存储布局更高效。通过查询INFORMATION_SCHEMA库中的表可以监控存储引擎的内部工作。在同一个语句中，InnoDB表可以与其他存储引擎表混用。即使有些操作系统限制文件大小为2GB，InnoDB仍然可以处理。 <strong>当处理大数据量时，InnoDB兼顾CPU，以达到最大性能 。</strong> </p>
+<h3 id="2-4-InnoDB架构"><a href="#2-4-InnoDB架构" class="headerlink" title="2.4 InnoDB架构"></a>2.4 InnoDB架构</h3><p><strong>1.</strong> <strong>缓冲池</strong> 缓冲池是主内存中的一部分空间，用来缓存已使用的表和索引数据。缓冲池使得经常被使用的数据能够直接在内存中获得，从而提高速度。</p>
+<p><strong>2.</strong> <strong>更改缓存</strong> 更改缓存是一个特殊的数据结构，当受影响的索引页不在缓存中时，更改缓存会缓存辅助索引页的更改。索引页被其他读取操作时会加载到缓存池，缓存的更改内容就会被合并。不同于集群索引，辅助索引并非独一无二的。当系统大部分闲置时，清除操作会定期运行，将更新的索引页刷入磁盘。更新缓存合并期间，可能会大大降低查询的性能。在内存中，更新缓存占用一部分InnoDB缓冲池。在磁盘中，更新缓存是系统表空间的一部分。更新缓存的数据类型由innodb_change_buffering配置项管理。</p>
+<p><strong>3.</strong> <strong>自适应哈希索引</strong> <strong>自适应哈希索引将负载和足够的内存结合起来</strong>，使得InnoDB像内存数据库一样运行，不需要降低事务上的性能或可靠性。这个特性通过innodb_adaptive_hash_index选项配置，或者通过– skip-innodb_adaptive_hash_index命令行在服务启动时关闭。</p>
+<p><strong>4.</strong> <strong>重做日志缓存</strong> 重做日志缓存存放要放入重做日志的数据。重做日志缓存大小通过innodb_log_buffer_size配置项配置。重做日志缓存会定期地将日志文件刷入磁盘。大型的重做日志缓存使得大型事务能够正常运行而不需要写入磁盘。</p>
+<p><strong>5.</strong> <strong>系统表空间</strong> 系统表空间包括InnoDB数据字典、双写缓存、更新缓存和撤销日志，同时也包括表和索引数据。多表共享，系统表空间被视为共享表空间。</p>
+<p><strong>6.</strong> <strong>双写缓存</strong> 双写缓存位于系统表空间中，用于写入从缓存池刷新的数据页。只有在刷新并写入双写缓存后，InnoDB才会将数据页写入合适的位置。</p>
+<p><strong>7.</strong> <strong>撤销日志</strong> 撤销日志是一系列与事务相关的撤销记录的集合，包含如何撤销事务最近的更改。如果其他事务要查询原始数据，可以从撤销日志记录中追溯未更改的数据。撤销日志存在于撤销日志片段中，这些片段包含于回滚片段中。</p>
+<p><strong>8.</strong> <strong>每个表一个文件的表空间</strong> 每个表一个文件的表空间是指每个单独的表空间创建在自身的数据文件中，而不是系统表空间中。这个功能通过innodb_file_per_table配置项开启。每个表空间由一个单独的.ibd数据文件代表，该文件默认被创建在数据库目录中。</p>
+<p><strong>9.</strong> <strong>通用表空间</strong> 使用CREATE TABLESPACE语法创建共享的InnoDB表空间。通用表空间可以创建在MySQL数据目录之外能够管理多个表并支持所有行格式的表。</p>
+<p><strong>10.</strong> <strong>撤销表空间</strong> 撤销表空间由一个或多个包含撤销日志的文件组成。撤销表空间的数量由innodb_undo_tablespaces配置项配置。</p>
+<p><strong>11.</strong> <strong>临时表空间</strong> 用户创建的临时表空间和基于磁盘的内部临时表都创建于临时表空间。innodb_temp_data_file_path配置项定义了相关的路径、名称、大小和属性。如果该值为空，默认会在innodb_data_home_dir变量指定的目录下创建一个自动扩展的数据文件。</p>
+<p><strong>12.</strong> <strong>重做日志</strong> 重做日志是基于磁盘的数据结构，在崩溃恢复期间使用，用来纠正数据。正常操作期间，重做日志会将请求数据进行编码，这些请求会改变InnoDB表数据。遇到意外崩溃后，未完成的更改会自动在初始化期间重新进行。</p>
 
       
     </div>
@@ -381,7 +395,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="https://mrqytalk.github.io/2022/04/18/MySql%E9%80%BB%E8%BE%91%E6%9E%B6%E6%9E%84/" title="MySql逻辑架构" target="_blank" rel="external">https://mrqytalk.github.io/2022/04/18/MySql逻辑架构/</a>
+      <a href="https://mrqytalk.github.io/2022/04/19/MySql%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/" title="MySql存储引擎" target="_blank" rel="external">https://mrqytalk.github.io/2022/04/19/MySql存储引擎/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -421,13 +435,9 @@
   
   <ul class="pager pull-left">
     
-    <li class="prev">
-      <a href="/2022/04/18/JVM%E4%B9%8B%E7%B1%BB%E5%AD%97%E8%8A%82%E7%A0%81%E8%AF%A6%E8%A7%A3/" title="JVM之类字节码详解"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
-    </li>
-    
     
     <li class="next">
-      <a href="/2022/04/16/%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95/" title="银行家算法"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2022/04/18/MySql%E7%B4%A2%E5%BC%95/" title="MySql索引"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     
