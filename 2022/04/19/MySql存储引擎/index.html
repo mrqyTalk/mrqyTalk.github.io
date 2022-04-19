@@ -28,7 +28,7 @@
 <meta property="og:description" content="1. 存储引擎的相关命令 查看mysql提供什么存储引擎并格式化输出：show engines \G;   查看默认的存储引擎：show variables like &#39;%storage_engine%&#39;;  修改默认的存储引擎 如果在创建表的语句中没有显式指定表的存储引擎的话，那就会默认使用 InnoDB 作为表的存储引擎。如果我们想改变表的默认存储引擎的话，可以这样写启动服务器">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-04-19T07:03:42.000Z">
-<meta property="article:modified_time" content="2022-04-19T07:04:41.025Z">
+<meta property="article:modified_time" content="2022-04-19T07:07:40.740Z">
 <meta property="article:author" content="喝水艺术家">
 <meta property="article:tag" content="MySql">
 <meta name="twitter:card" content="summary">
@@ -229,7 +229,7 @@
   <div class="slimContent">
     <nav id="toc" class="article-toc">
       <h3 class="toc-title">文章目录</h3>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E7%9A%84%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4"><span class="toc-text">1. 存储引擎的相关命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%BB%8B%E7%BB%8D"><span class="toc-text">2. 存储引擎介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-InnoDB%E5%BC%95%E6%93%8E%EF%BC%9A%E5%85%B7%E5%A4%87%E5%A4%96%E9%94%AE%E6%94%AF%E6%8C%81%E5%8A%9F%E8%83%BD%E7%9A%84%E4%BA%8B%E5%8A%A1%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-text">2.1  InnoDB引擎：具备外键支持功能的事务存储引擎</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-MyISAM%E5%92%8CInnoDB%E7%9A%84%E6%AF%94%E8%BE%83"><span class="toc-text">2.2 MyISAM和InnoDB的比较</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-InnoDB%E8%A1%A8%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-text">2.3 InnoDB表的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-InnoDB%E6%9E%B6%E6%9E%84"><span class="toc-text">2.4 InnoDB架构</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E7%9A%84%E7%9B%B8%E5%85%B3%E5%91%BD%E4%BB%A4"><span class="toc-text">1. 存储引擎的相关命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%BB%8B%E7%BB%8D"><span class="toc-text">2. 存储引擎介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-InnoDB%E5%BC%95%E6%93%8E"><span class="toc-text">2.1  InnoDB引擎</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-MyISAM%E5%92%8CInnoDB%E7%9A%84%E6%AF%94%E8%BE%83"><span class="toc-text">2.2 MyISAM和InnoDB的比较</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-InnoDB%E8%A1%A8%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-text">2.3 InnoDB表的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-InnoDB%E6%9E%B6%E6%9E%84"><span class="toc-text">2.4 InnoDB架构</span></a></li></ol></li></ol>
     </nav>
   </div>
 </aside>
@@ -305,21 +305,15 @@
 <li><p>修改表的存储引擎：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE 表名 ENGINE = 存储引擎名称;</span><br></pre></td></tr></table></figure></li>
 </ul>
-<h2 id="2-存储引擎介绍"><a href="#2-存储引擎介绍" class="headerlink" title="2. 存储引擎介绍"></a>2. 存储引擎介绍</h2><h3 id="2-1-InnoDB引擎：具备外键支持功能的事务存储引擎"><a href="#2-1-InnoDB引擎：具备外键支持功能的事务存储引擎" class="headerlink" title="2.1  InnoDB引擎：具备外键支持功能的事务存储引擎"></a>2.1  InnoDB引擎：具备外键支持功能的事务存储引擎</h3><ul>
-<li><p>MySQL大于等于5.5之后，默认采用InnoDB引擎 。 </p>
-</li>
-<li><p>InnoDB是MySQL的<code>默认事务型引擎</code> ，它被设计用来处理大量的短期(short-lived)事务。可以确保事务的完整提交(Commit)和回滚(Rollback)。</p>
-</li>
-<li><p>除了增加和查询外，还需要更新、删除操作，那么，应优先选择InnoDB存储引擎。</p>
-</li>
-<li><p><strong>除非有非常特别的原因需要使用其他的存储引擎，否则应该优先考虑InnoDB引擎。</strong></p>
-</li>
-<li><p>InnoDB是<strong>为处理巨大数据量的最大性能设计</strong> 。</p>
-</li>
-<li><p>对比MyISAM的存储引擎， <strong>InnoDB写的处理效率差一些</strong> ，并且会占用更多的磁盘空间以保存数据和索引。</p>
-</li>
-<li><p>MyISAM只缓存索引，不缓存真实数据；InnoDB不仅缓存索引还要缓存真实数据， <strong>对内存要求较高</strong> ，而且内存大小对性能有决定性的影响。</p>
-</li>
+<h2 id="2-存储引擎介绍"><a href="#2-存储引擎介绍" class="headerlink" title="2. 存储引擎介绍"></a>2. 存储引擎介绍</h2><h3 id="2-1-InnoDB引擎"><a href="#2-1-InnoDB引擎" class="headerlink" title="2.1  InnoDB引擎"></a>2.1  InnoDB引擎</h3><ul>
+<li>MySQL大于等于5.5之后，默认采用InnoDB引擎 。 </li>
+<li>具备外键支持功能的事务存储引擎</li>
+<li>InnoDB是MySQL的<code>默认事务型引擎</code> ，它被设计用来处理大量的短期(short-lived)事务。可以确保事务的完整提交(Commit)和回滚(Rollback)。</li>
+<li>除了增加和查询外，还需要更新、删除操作，那么，应优先选择InnoDB存储引擎。</li>
+<li><strong>除非有非常特别的原因需要使用其他的存储引擎，否则应该优先考虑InnoDB引擎。</strong></li>
+<li>InnoDB是<strong>为处理巨大数据量的最大性能设计</strong> 。</li>
+<li>对比MyISAM的存储引擎， <strong>InnoDB写的处理效率差一些</strong> ，并且会占用更多的磁盘空间以保存数据和索引。</li>
+<li>MyISAM只缓存索引，不缓存真实数据；InnoDB不仅缓存索引还要缓存真实数据， <strong>对内存要求较高</strong> ，而且内存大小对性能有决定性的影响。</li>
 </ul>
 <h3 id="2-2-MyISAM和InnoDB的比较"><a href="#2-2-MyISAM和InnoDB的比较" class="headerlink" title="2.2 MyISAM和InnoDB的比较"></a>2.2 MyISAM和InnoDB的比较</h3><table>
 <thead>
